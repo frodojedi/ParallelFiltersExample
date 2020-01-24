@@ -9,7 +9,13 @@ FilterExampleAudioProcessor::FilterExampleAudioProcessor()
        parametersPanelFilter2 (*this, nullptr, Identifier ("ParametersPanelFilter2"), createParameterLayoutPanelFilter2()),
        parametersPanelFilter3 (*this, nullptr, Identifier ("ParametersPanelFilter3"), createParameterLayoutPanelFilter3())
 {
-    filterArray[numFilterInstances];
+    
+    filterArray.resize(numFilterInstances);
+    /* In the case I want to pass some parameter to the constructor I should do:
+    filterArray.emplace_back("parameter1");
+    filterArray.emplace_back("parameter2");
+    filterArray.emplace_back("parameter3");
+    */
     
     globalGainParameterPanelGeneralControls = parametersPanelGeneralControls.getRawParameterValue ("global_gain_panel_general_controls");
     
