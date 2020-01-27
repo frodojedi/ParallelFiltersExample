@@ -45,6 +45,18 @@ public:
         addAndMakeVisible (globalGainLabel);
         addAndMakeVisible (globalGainSlider);
         
+        addAndMakeVisible (presetsMenuLabel);
+        presetsMenuLabel.setText ("Select presets", dontSendNotification);
+        //presetsMenuLabel.setFont (textFont);
+        addAndMakeVisible (presetsMenu);
+        presetsMenu.addItem("Preset 1", preset1Index);
+        presetsMenu.addItem("Preset 2", preset2Index);
+        presetsMenu.onChange = [this] { presetsMenuChanged(); };
+        //presetsMenu.setSelectedId (preset1Index); -> Maybe this is not necessary? It should be set from the Value Tree
+
+        
+        menupresetsAttachment.reset (new ComboBoxAttachment (valueTreeState, "menu_presets_panel_general_controls", presetsMenu));
+        
         globalGainAttachment.reset (new SliderAttachment (valueTreeState, "global_gain_panel_general_controls", globalGainSlider));
         
         formatManager.registerBasicFormats();
@@ -95,8 +107,15 @@ public:
         loopingToggle       .setBounds (10, 100, getWidth() - 20, 20);
         currentPositionLabel.setBounds (10, 130, getWidth() - 20, 20);
         
+        presetsMenuLabel   .setBounds (10, 175, getWidth() - 20, 20);
+        presetsMenu        .setBounds (10, 200, getWidth() - 20, 20);
+        
+        
         auto sliderLeft = paramLabelWidth + 10;
-        globalGainSlider.setBounds (sliderLeft, 200, getWidth() - sliderLeft - 10, 20);
+        auto sliderWidth = getWidth() - sliderLeft - 10;
+        globalGainSlider.setBounds (sliderLeft, 300, sliderWidth, 20);
+        
+        
     }
     
 private:
@@ -110,10 +129,21 @@ private:
     ToggleButton loopingToggle;
     Label currentPositionLabel;
 
+    ComboBox presetsMenu;
+    Label presetsMenuLabel;
+    
+    Label globalGainLabel;
+    Slider globalGainSlider;
+    
+    
     AudioFormatManager formatManager;
     
     
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    typedef AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachment;
+    std::unique_ptr<ComboBoxAttachment> menupresetsAttachment;
+    std::unique_ptr<SliderAttachment> globalGainAttachment;
+    
     
     enum
     {
@@ -123,10 +153,12 @@ private:
     };
 
     
-    Label globalGainLabel;
-    Slider globalGainSlider;
-    
-    std::unique_ptr<SliderAttachment> globalGainAttachment;
+    enum presetsIndex
+    {
+        preset1Index = 1,
+        preset2Index
+    };
+
     
     
     Colour colour_background = Colours::lightsalmon;
@@ -208,6 +240,25 @@ private:
         updateLoopState (loopingToggle.getToggleState());
     }
 
-    //==========================================================================
     
+    //==========================================================================
+    void presetsMenuChanged()
+    {
+        switch (presetsMenu.getSelectedId())
+        {
+            case preset1Index:     setPresetsPreset2();  break;
+            case preset2Index:     setPresetsPreset2();   break;
+        }
+    }
+    
+
+    void setPresetsPreset1()
+    {
+        //TO DO:
+    }
+    
+    void setPresetsPreset2()
+    {
+       //TO DO:
+    }
 };
