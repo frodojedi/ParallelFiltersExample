@@ -4,10 +4,7 @@
 //==============================================================================
 FilterExampleAudioProcessor::FilterExampleAudioProcessor()
      : AudioProcessor (BusesProperties().withOutput ("Output", AudioChannelSet::stereo(), true)),
-       parametersPanelGeneralControls (*this, nullptr, Identifier ("ParametersPanelGeneralControls"), createParameterLayoutPanelGeneralControls()),
-       parametersPanelFilter1 (*this, nullptr, Identifier ("ParametersPanelFilter1"), createParameterLayoutPanelFilter1()),
-       parametersPanelFilter2 (*this, nullptr, Identifier ("ParametersPanelFilter2"), createParameterLayoutPanelFilter2()),
-       parametersPanelFilter3 (*this, nullptr, Identifier ("ParametersPanelFilter3"), createParameterLayoutPanelFilter3())
+       parameters (*this, nullptr, Identifier ("Parameters"), createParameterLayout())
 {
     
     filterArray.resize(numFilterInstances);
@@ -17,29 +14,32 @@ FilterExampleAudioProcessor::FilterExampleAudioProcessor()
     filterArray.emplace_back("parameter3");
     */
     
-    globalGainParameterPanelGeneralControls = parametersPanelGeneralControls.getRawParameterValue ("global_gain_panel_general_controls");
+
+    globalGainParameterPanelGeneralControls = parameters.getRawParameterValue ("global_gain_panel_general_controls");
     
-    gainParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("gain_panel_Filter1");
-    freqParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("freq_panel_Filter1");
-    poleRadiusParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("pole_radius_panel_Filter1");
-    numObjectsParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("num_objects_panel_Filter1");
-    soundDecayParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("sound_decay_panel_Filter1");
-    systemDecayParameterPanelFilter1 = parametersPanelFilter1.getRawParameterValue ("system_decay_panel_Filter1");
+    gainParameterPanelFilter1 = parameters.getRawParameterValue ("gain_panel_Filter1");
+    freqParameterPanelFilter1 = parameters.getRawParameterValue ("freq_panel_Filter1");
+    poleRadiusParameterPanelFilter1 = parameters.getRawParameterValue ("pole_radius_panel_Filter1");
+    numObjectsParameterPanelFilter1 = parameters.getRawParameterValue ("num_objects_panel_Filter1");
+    soundDecayParameterPanelFilter1 = parameters.getRawParameterValue ("sound_decay_panel_Filter1");
+    systemDecayParameterPanelFilter1 = parameters.getRawParameterValue ("system_decay_panel_Filter1");
     
-    gainParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("gain_panel_Filter2");
-    freqParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("freq_panel_Filter2");
-    poleRadiusParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("pole_radius_panel_Filter2");
-    numObjectsParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("num_objects_panel_Filter2");
-    soundDecayParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("sound_decay_panel_Filter2");
-    systemDecayParameterPanelFilter2 = parametersPanelFilter2.getRawParameterValue ("system_decay_panel_Filter2");
+    gainParameterPanelFilter2 = parameters.getRawParameterValue ("gain_panel_Filter2");
+    freqParameterPanelFilter2 = parameters.getRawParameterValue ("freq_panel_Filter2");
+    poleRadiusParameterPanelFilter2 = parameters.getRawParameterValue ("pole_radius_panel_Filter2");
+    numObjectsParameterPanelFilter2 = parameters.getRawParameterValue ("num_objects_panel_Filter2");
+    soundDecayParameterPanelFilter2 = parameters.getRawParameterValue ("sound_decay_panel_Filter2");
+    systemDecayParameterPanelFilter2 = parameters.getRawParameterValue ("system_decay_panel_Filter2");
     
-    gainParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("gain_panel_Filter3");
-    freqParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("freq_panel_Filter3");
-    poleRadiusParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("pole_radius_panel_Filter3");
-    numObjectsParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("num_objects_panel_Filter3");
-    soundDecayParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("sound_decay_panel_Filter3");
-    systemDecayParameterPanelFilter3 = parametersPanelFilter3.getRawParameterValue ("system_decay_panel_Filter3");
-}
+    gainParameterPanelFilter3 = parameters.getRawParameterValue ("gain_panel_Filter3");
+    freqParameterPanelFilter3 = parameters.getRawParameterValue ("freq_panel_Filter3");
+    poleRadiusParameterPanelFilter3 = parameters.getRawParameterValue ("pole_radius_panel_Filter3");
+    numObjectsParameterPanelFilter3 = parameters.getRawParameterValue ("num_objects_panel_Filter3");
+    soundDecayParameterPanelFilter3 = parameters.getRawParameterValue ("sound_decay_panel_Filter3");
+    systemDecayParameterPanelFilter3 = parameters.getRawParameterValue ("system_decay_panel_Filter3");
+
+
+    }
 
 FilterExampleAudioProcessor::~FilterExampleAudioProcessor()
 {
@@ -48,312 +48,293 @@ FilterExampleAudioProcessor::~FilterExampleAudioProcessor()
 
 
 
-//==============================================================================
-AudioProcessorValueTreeState::ParameterLayout FilterExampleAudioProcessor::createParameterLayoutPanelGeneralControls()
+
+
+
+void FilterExampleAudioProcessor::addGeneralControlsParams (AudioProcessorValueTreeState::ParameterLayout& layout)
 {
-    std::vector<std::unique_ptr<RangedAudioParameter>> params;
-    
-    auto globalGainParam =  std::make_unique<AudioParameterFloat>
-                            ("global_gain_panel_general_controls", // parameterID
-                            "Global Gain",                         // parameter name
-                            0.0f,                                  // minimum value
-                            1.0f,                                  // maximum value
-                            0.15f);                                 // default value
-    
-    params.push_back(std::move(globalGainParam));
-    return {params.begin(), params.end()};
+    layout.add (
+                std::make_unique<AudioParameterFloat> ("global_gain_panel_general_controls",
+                                                       "Global Gain",
+                                                       0.0f,
+                                                       1.0f,
+                                                       0.15f)
+                );
 }
 
 
-//==============================================================================
-AudioProcessorValueTreeState::ParameterLayout FilterExampleAudioProcessor::createParameterLayoutPanelFilter1()
+
+void FilterExampleAudioProcessor::addFilter1Params (AudioProcessorValueTreeState::ParameterLayout& layout)
 {
-    std::vector<std::unique_ptr<RangedAudioParameter>> params;
-    
-    auto GainFilter1Param =  std::make_unique<AudioParameterFloat>
-                            ("gain_panel_Filter1",              // parameterID
-                            "Gain Filter1",                     // parameter name
-                            0.0f,                              // minimum value
-                            1.0f,                              // maximum value
-                            0.1f);                             // default value
-    
-    auto FreqFilter1Param =  std::make_unique<AudioParameterFloat>
-                            ("freq_panel_Filter1",              // parameterID
-                            "Freq Filter1",                     // parameter name
-                            30.0f,                             // minimum value
-                            15000.0f,                          // maximum value
-                            6460.0f);                          // default value
-
-    
-    auto PoleRadiusFilter1Param = std::make_unique<AudioParameterFloat>
-                                 ("pole_radius_panel_Filter1",         // parameterID
-                                  "Pole Radius Filter1",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.f,        // minimum
-                                                          0.99999f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.932f,      // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto NumObjectsFilter1Param = std::make_unique<AudioParameterFloat>
-                                 ("num_objects_panel_Filter1",  // parameterID
-                                 "Num Objects Filter1",         // parameter name
-                                 1.0f,                         // minimum value
-                                 1024.0f,                      // maximum value
-                                 23.0f);                       // default value
-      
-    auto SoundDecayFilter1Param = std::make_unique<AudioParameterFloat>
-                                 ("sound_decay_panel_Filter1",         // parameterID
-                                  "Sound Decay Filter1",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.3f,        // minimum
-                                                          0.99995f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.98f,       // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto SystemDecayFilter1Param = std::make_unique<AudioParameterFloat>
-                                 ("system_decay_panel_Filter1",         // parameterID
-                                  "System Decay Filter1",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.85f,        // minimum
-                                                          0.99995f,     // maximum
-                                                          0.000001f),   // step size
-                                                          0.9965f,      // default value
-                                                          String(),     // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    params.push_back(std::move(GainFilter1Param));
-    params.push_back(std::move(FreqFilter1Param));
-    params.push_back(std::move(PoleRadiusFilter1Param));
-    params.push_back(std::move(NumObjectsFilter1Param));
-    params.push_back(std::move(SoundDecayFilter1Param));
-    params.push_back(std::move(SystemDecayFilter1Param));
-    return {params.begin(), params.end()};
-}
-
-//==============================================================================
-AudioProcessorValueTreeState::ParameterLayout FilterExampleAudioProcessor::createParameterLayoutPanelFilter2()
-{
-    std::vector<std::unique_ptr<RangedAudioParameter>> params;
-    
-    auto GainFilter2Param =  std::make_unique<AudioParameterFloat>
-                            ("gain_panel_Filter2",              // parameterID
-                            "Gain Filter2",                     // parameter name
-                            0.0f,                              // minimum value
-                            1.0f,                              // maximum value
-                            0.1f);                             // default value
-    
-    auto FreqFilter2Param =  std::make_unique<AudioParameterFloat>
-                            ("freq_panel_Filter2",              // parameterID
-                            "Freq Filter2",                     // parameter name
-                            30.0f,                             // minimum value
-                            15000.0f,                          // maximum value
-                            6460.0f);                          // default value
-
-    
-    auto PoleRadiusFilter2Param = std::make_unique<AudioParameterFloat>
-                                 ("pole_radius_panel_Filter2",         // parameterID
-                                  "Pole Radius Filter2",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.f,        // minimum
-                                                          0.99999f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.932f,      // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto NumObjectsFilter2Param = std::make_unique<AudioParameterFloat>
-                                 ("num_objects_panel_Filter2",  // parameterID
-                                 "Num Objects Filter2",         // parameter name
-                                 1.0f,                         // minimum value
-                                 1024.0f,                      // maximum value
-                                 23.0f);                       // default value
-      
-    auto SoundDecayFilter2Param = std::make_unique<AudioParameterFloat>
-                                 ("sound_decay_panel_Filter2",         // parameterID
-                                  "Sound Decay Filter2",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.3f,        // minimum
-                                                          0.99995f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.98f,       // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto SystemDecayFilter2Param = std::make_unique<AudioParameterFloat>
-                                 ("system_decay_panel_Filter2",         // parameterID
-                                  "System Decay Filter2",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.85f,        // minimum
-                                                          0.99995f,     // maximum
-                                                          0.000001f),   // step size
-                                                          0.9965f,      // default value
-                                                          String(),     // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    params.push_back(std::move(GainFilter2Param));
-    params.push_back(std::move(FreqFilter2Param));
-    params.push_back(std::move(PoleRadiusFilter2Param));
-    params.push_back(std::move(NumObjectsFilter2Param));
-    params.push_back(std::move(SoundDecayFilter2Param));
-    params.push_back(std::move(SystemDecayFilter2Param));
-    return {params.begin(), params.end()};
-}
-
-//==============================================================================
-AudioProcessorValueTreeState::ParameterLayout FilterExampleAudioProcessor::createParameterLayoutPanelFilter3()
-{
-    std::vector<std::unique_ptr<RangedAudioParameter>> params;
-    
-    auto GainFilter3Param =  std::make_unique<AudioParameterFloat>
-                            ("gain_panel_Filter3",              // parameterID
-                            "Gain Filter3",                     // parameter name
-                            0.0f,                              // minimum value
-                            1.0f,                              // maximum value
-                            0.1f);                             // default value
-    
-    auto FreqFilter3Param =  std::make_unique<AudioParameterFloat>
-                            ("freq_panel_Filter3",              // parameterID
-                            "Freq Filter3",                     // parameter name
-                            30.0f,                             // minimum value
-                            15000.0f,                          // maximum value
-                            6460.0f);                          // default value
-
-    
-    auto PoleRadiusFilter3Param = std::make_unique<AudioParameterFloat>
-                                 ("pole_radius_panel_Filter3",         // parameterID
-                                  "Pole Radius Filter3",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.f,        // minimum
-                                                          0.99999f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.932f,      // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto NumObjectsFilter3Param = std::make_unique<AudioParameterFloat>
-                                 ("num_objects_panel_Filter3",  // parameterID
-                                 "Num Objects Filter3",         // parameter name
-                                 1.0f,                         // minimum value
-                                 1024.0f,                      // maximum value
-                                 23.0f);                       // default value
-      
-    auto SoundDecayFilter3Param = std::make_unique<AudioParameterFloat>
-                                 ("sound_decay_panel_Filter3",         // parameterID
-                                  "Sound Decay Filter3",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.3f,        // minimum
-                                                          0.99995f,    // maximum
-                                                          0.000001f),  // step size
-                                                          0.98f,       // default value
-                                                          String(),    // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    auto SystemDecayFilter3Param = std::make_unique<AudioParameterFloat>
-                                 ("system_decay_panel_Filter3",         // parameterID
-                                  "System Decay Filter3",               // parameter name
-                                  NormalisableRange<float>
-                                                          (0.85f,        // minimum
-                                                          0.99995f,     // maximum
-                                                          0.000001f),   // step size
-                                                          0.9965f,      // default value
-                                                          String(),     // label
-                                                          AudioProcessorParameter::genericParameter,
-                                                          [](float value, int maximumStringLength)
-                                                          {
-                                                              return String (value);
-                                                          },
-                                                          [](const String &text)
-                                                          {
-                                                              return float (text.getDoubleValue());
-                                                          }
-                                  );
-    
-    params.push_back(std::move(GainFilter3Param));
-    params.push_back(std::move(FreqFilter3Param));
-    params.push_back(std::move(PoleRadiusFilter3Param));
-    params.push_back(std::move(NumObjectsFilter3Param));
-    params.push_back(std::move(SoundDecayFilter3Param));
-    params.push_back(std::move(SystemDecayFilter3Param));
-    return {params.begin(), params.end()};
+    layout.add (
+                std::make_unique<AudioParameterFloat>
+                                            ("gain_panel_Filter1",              // parameterID
+                                            "Gain Filter1",                     // parameter name
+                                            0.0f,                              // minimum value
+                                            1.0f,                              // maximum value
+                                            0.1f                               // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                            ("freq_panel_Filter1",              // parameterID
+                                            "Freq Filter1",                     // parameter name
+                                            30.0f,                             // minimum value
+                                            15000.0f,                          // maximum value
+                                            6460.0f                            // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("pole_radius_panel_Filter1",         // parameterID
+                                                  "Pole Radius Filter1",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.f,        // minimum
+                                                                          0.99999f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.932f,      // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("num_objects_panel_Filter1",  // parameterID
+                                                 "Num Objects Filter1",         // parameter name
+                                                 1.0f,                         // minimum value
+                                                 1024.0f,                      // maximum value
+                                                 23.0f                         // default value
+                                                 ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("sound_decay_panel_Filter1",         // parameterID
+                                                  "Sound Decay Filter1",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.3f,        // minimum
+                                                                          0.99995f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.98f,       // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("system_decay_panel_Filter1",         // parameterID
+                                                  "System Decay Filter1",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.85f,        // minimum
+                                                                          0.99995f,     // maximum
+                                                                          0.000001f),   // step size
+                                                                          0.9965f,      // default value
+                                                                          String(),     // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  )
+                );
 }
 
 
+
+
+void FilterExampleAudioProcessor::addFilter2Params (AudioProcessorValueTreeState::ParameterLayout& layout)
+{
+    layout.add (
+                std::make_unique<AudioParameterFloat>
+                                            ("gain_panel_Filter2",              // parameterID
+                                            "Gain Filter2",                     // parameter name
+                                            0.0f,                              // minimum value
+                                            1.0f,                              // maximum value
+                                            0.1f                               // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                            ("freq_panel_Filter2",              // parameterID
+                                            "Freq Filter2",                     // parameter name
+                                            30.0f,                             // minimum value
+                                            15000.0f,                          // maximum value
+                                            6460.0f                            // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("pole_radius_panel_Filter2",         // parameterID
+                                                  "Pole Radius Filter2",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.f,        // minimum
+                                                                          0.99999f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.932f,      // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("num_objects_panel_Filter2",  // parameterID
+                                                 "Num Objects Filter2",         // parameter name
+                                                 1.0f,                         // minimum value
+                                                 1024.0f,                      // maximum value
+                                                 23.0f                         // default value
+                                                 ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("sound_decay_panel_Filter2",         // parameterID
+                                                  "Sound Decay Filter2",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.3f,        // minimum
+                                                                          0.99995f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.98f,       // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("system_decay_panel_Filter2",         // parameterID
+                                                  "System Decay Filter2",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.85f,        // minimum
+                                                                          0.99995f,     // maximum
+                                                                          0.000001f),   // step size
+                                                                          0.9965f,      // default value
+                                                                          String(),     // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  )
+                );
+}
+
+
+
+
+
+void FilterExampleAudioProcessor::addFilter3Params (AudioProcessorValueTreeState::ParameterLayout& layout)
+{
+    layout.add (
+                std::make_unique<AudioParameterFloat>
+                                            ("gain_panel_Filter3",              // parameterID
+                                            "Gain Filter3",                     // parameter name
+                                            0.0f,                              // minimum value
+                                            1.0f,                              // maximum value
+                                            0.1f                               // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                            ("freq_panel_Filter3",              // parameterID
+                                            "Freq Filter3",                     // parameter name
+                                            30.0f,                             // minimum value
+                                            15000.0f,                          // maximum value
+                                            6460.0f                            // default value
+                                            ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("pole_radius_panel_Filter3",         // parameterID
+                                                  "Pole Radius Filter3",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.f,        // minimum
+                                                                          0.99999f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.932f,      // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("num_objects_panel_Filter3",  // parameterID
+                                                 "Num Objects Filter3",         // parameter name
+                                                 1.0f,                         // minimum value
+                                                 1024.0f,                      // maximum value
+                                                 23.0f                         // default value
+                                                 ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("sound_decay_panel_Filter3",         // parameterID
+                                                  "Sound Decay Filter3",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.3f,        // minimum
+                                                                          0.99995f,    // maximum
+                                                                          0.000001f),  // step size
+                                                                          0.98f,       // default value
+                                                                          String(),    // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  ),
+                std::make_unique<AudioParameterFloat>
+                                                 ("system_decay_panel_Filter3",         // parameterID
+                                                  "System Decay Filter3",               // parameter name
+                                                  NormalisableRange<float>
+                                                                          (0.85f,        // minimum
+                                                                          0.99995f,     // maximum
+                                                                          0.000001f),   // step size
+                                                                          0.9965f,      // default value
+                                                                          String(),     // label
+                                                                          AudioProcessorParameter::genericParameter,
+                                                                          [](float value, int maximumStringLength)
+                                                                          {
+                                                                              return String (value);
+                                                                          },
+                                                                          [](const String &text)
+                                                                          {
+                                                                              return float (text.getDoubleValue());
+                                                                          }
+                                                  )
+                );
+}
+
+
+
+
+AudioProcessorValueTreeState::ParameterLayout FilterExampleAudioProcessor::createParameterLayout()
+{
+    AudioProcessorValueTreeState::ParameterLayout result;
+    addGeneralControlsParams (result);
+    addFilter1Params (result);
+    addFilter2Params (result);
+    addFilter3Params (result);
+    return result;
+}
 
 
 
@@ -572,7 +553,7 @@ bool FilterExampleAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* FilterExampleAudioProcessor::createEditor()
 {
-    return new FilterExampleAudioProcessorEditor (*this, parametersPanelGeneralControls, parametersPanelFilter1, parametersPanelFilter2, parametersPanelFilter3);
+    return new FilterExampleAudioProcessorEditor (*this, parameters);
 }
 
 //==============================================================================
@@ -581,13 +562,27 @@ void FilterExampleAudioProcessor::getStateInformation (MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    auto state = parameters.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void FilterExampleAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (parameters.state.getType()))
+            parameters.replaceState (ValueTree::fromXml (*xmlState));
 }
+
+
+
+
 
 //==============================================================================
 // This creates new instances of the plugin..

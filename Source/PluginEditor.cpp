@@ -12,8 +12,8 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-FilterExampleAudioProcessorEditor::FilterExampleAudioProcessorEditor (FilterExampleAudioProcessor& p, AudioProcessorValueTreeState& vtsPanelGeneralControls, AudioProcessorValueTreeState& vtsPanelFilter1, AudioProcessorValueTreeState& vtsPanelFilter2, AudioProcessorValueTreeState& vtsPanelFilter3)
-    : AudioProcessorEditor (&p), processor (p), valueTreeStatePanelGeneralControls (vtsPanelGeneralControls), valueTreeStatePanelFilter1 (vtsPanelFilter1), valueTreeStatePanelFilter2 (vtsPanelFilter2), valueTreeStatePanelFilter3 (vtsPanelFilter3)
+FilterExampleAudioProcessorEditor::FilterExampleAudioProcessorEditor (FilterExampleAudioProcessor& p, AudioProcessorValueTreeState& vts)
+    : AudioProcessorEditor (&p), processor (p), valueTreeState (vts)
 {
     
     auto& lnf = getLookAndFeel();

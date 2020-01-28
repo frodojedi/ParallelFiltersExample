@@ -21,7 +21,7 @@
 class FilterExampleAudioProcessorEditor : public AudioProcessorEditor
 {
 public:
-    FilterExampleAudioProcessorEditor (FilterExampleAudioProcessor& parent, AudioProcessorValueTreeState& vtsPanelGeneralControls, AudioProcessorValueTreeState& vtsPanelFilter1, AudioProcessorValueTreeState& vtsPanelFilter2, AudioProcessorValueTreeState& vtsPanelFilter3);
+    FilterExampleAudioProcessorEditor (FilterExampleAudioProcessor& parent, AudioProcessorValueTreeState& vts);
     ~FilterExampleAudioProcessorEditor();
 
     //==============================================================================
@@ -33,15 +33,12 @@ private:
     // access the processor object that created it.
     FilterExampleAudioProcessor& processor;
     
-    AudioProcessorValueTreeState& valueTreeStatePanelGeneralControls;
-    AudioProcessorValueTreeState& valueTreeStatePanelFilter1;
-    AudioProcessorValueTreeState& valueTreeStatePanelFilter2;
-    AudioProcessorValueTreeState& valueTreeStatePanelFilter3;
+    AudioProcessorValueTreeState& valueTreeState;
        
-    PanelGeneralControls panelGeneralControls{processor, valueTreeStatePanelGeneralControls};
-    PanelFilter1 panelFilter1{valueTreeStatePanelFilter1};
-    PanelFilter2 panelFilter2{valueTreeStatePanelFilter2};
-    PanelFilter3 panelFilter3{valueTreeStatePanelFilter3};
+    PanelGeneralControls panelGeneralControls{processor, valueTreeState};
+    PanelFilter1 panelFilter1{valueTreeState};
+    PanelFilter2 panelFilter2{valueTreeState};
+    PanelFilter3 panelFilter3{valueTreeState};
     
     
     Colour colourText = Colours::black;

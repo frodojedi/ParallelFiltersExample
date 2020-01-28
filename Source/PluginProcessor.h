@@ -47,15 +47,14 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     //==============================================================================
-    AudioProcessorValueTreeState parametersPanelGeneralControls;
-    AudioProcessorValueTreeState::ParameterLayout createParameterLayoutPanelGeneralControls();
-    AudioProcessorValueTreeState parametersPanelFilter1;
-    AudioProcessorValueTreeState::ParameterLayout createParameterLayoutPanelFilter1();
-    AudioProcessorValueTreeState parametersPanelFilter2;
-    AudioProcessorValueTreeState::ParameterLayout createParameterLayoutPanelFilter2();
-    AudioProcessorValueTreeState parametersPanelFilter3;
-    AudioProcessorValueTreeState::ParameterLayout createParameterLayoutPanelFilter3();
     
+    AudioProcessorValueTreeState parameters;
+    AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    
+    void addGeneralControlsParams (AudioProcessorValueTreeState::ParameterLayout& layout);
+    void addFilter1Params (AudioProcessorValueTreeState::ParameterLayout& layout);
+    void addFilter2Params (AudioProcessorValueTreeState::ParameterLayout& layout);
+    void addFilter3Params (AudioProcessorValueTreeState::ParameterLayout& layout);
     
     //==============================================================================
     void updateParameters();
