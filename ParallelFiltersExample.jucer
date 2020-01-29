@@ -3,6 +3,15 @@
 <JUCERPROJECT id="kGOzlI" name="ParallelFiltersExample" projectType="audioplug"
               jucerVersion="5.4.5">
   <MAINGROUP id="OXpxo2" name="ParallelFiltersExample">
+    <GROUP id="{F349CD42-A668-7EBC-F0E6-3384480658FA}" name="Resources">
+      <GROUP id="{CC7BC121-4EDA-EDA1-9D6B-F28C3E47F634}" name="WavFiles">
+        <FILE id="ebWvXL" name="exciter.wav" compile="0" resource="1" file="Resources/WavFiles/exciter.wav"/>
+      </GROUP>
+      <GROUP id="{576DB894-8768-CB36-E658-4C20EB870A2F}" name="Presets">
+        <FILE id="GtaZUL" name="preset1.xml" compile="0" resource="1" file="Resources/Presets/preset1.xml"/>
+        <FILE id="q6porI" name="preset2.xml" compile="0" resource="1" file="Resources/Presets/preset2.xml"/>
+      </GROUP>
+    </GROUP>
     <GROUP id="{7216A8D1-04A6-99AA-DDE3-D0B2B05C8503}" name="Source">
       <FILE id="pWnT9i" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
       <FILE id="Y0Wxg7" name="PanelFilter.h" compile="0" resource="0" file="Source/PanelFilter.h"/>

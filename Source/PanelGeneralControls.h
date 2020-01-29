@@ -9,8 +9,7 @@ public:
 
     PanelGeneralControls (FilterExampleAudioProcessor& proc, AudioProcessorValueTreeState& valueTreeState) : m_proc(proc)
     {
-        m_proc.state = FilterExampleAudioProcessor::TransportState::Stopped;
-        
+
         addAndMakeVisible (&openButton);
         openButton.setButtonText ("Open...");
         openButton.onClick = [this] { openButtonClicked(); };
@@ -51,7 +50,8 @@ public:
         addAndMakeVisible (presetsMenu);
         presetsMenu.addItem("Preset 1", preset1Index);
         presetsMenu.addItem("Preset 2", preset2Index);
-        presetsMenu.onChange = [this] { presetsMenuChanged(); };
+        //presetsMenu.onChange = [this] { presetsMenuChanged(); };
+        presetsMenu.onChange = [this] { m_proc.loadPresetFromID(presetsMenu.getSelectedId()); };
         //presetsMenu.setSelectedId (preset1Index); -> Maybe this is not necessary? It should be set from the Value Tree
 
         
@@ -61,6 +61,9 @@ public:
         
         formatManager.registerBasicFormats();
         m_proc.transportSource.addChangeListener (this);
+        m_proc.state = FilterExampleAudioProcessor::TransportState::Stopped;
+        File dir("~/Documents/Development/codice_JUCE/Learning_JUCE/MyPluginsLearningTrials/ParallelFiltersExample/Resources/WavFiles");
+        loadDefaultWavFile (dir.getChildFile ("exciter.wav"));
     }
     
     
@@ -135,9 +138,7 @@ private:
     Label globalGainLabel;
     Slider globalGainSlider;
     
-    
     AudioFormatManager formatManager;
-    
     
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachment;
@@ -202,6 +203,28 @@ private:
             }
         }
     }
+    
+    
+    
+    
+    void loadDefaultWavFile(const File& defaultWavFile)
+    {
+        if (! defaultWavFile.existsAsFile())
+        {
+            return;  // file doesn't exist
+        }
+            
+        auto* reader = formatManager.createReaderFor (defaultWavFile);
+
+        if (reader != nullptr)
+        {
+            std::unique_ptr<AudioFormatReaderSource> newSource (new AudioFormatReaderSource (reader, true));
+            m_proc.transportSource.setSource (newSource.get(), 0, nullptr, reader->sampleRate);
+            playButton.setEnabled (true);
+            m_proc.readerSource.reset (newSource.release());
+        }
+    }
+
 
     void openButtonClicked()
     {
@@ -242,23 +265,6 @@ private:
 
     
     //==========================================================================
-    void presetsMenuChanged()
-    {
-        switch (presetsMenu.getSelectedId())
-        {
-            case preset1Index:     setPresetsPreset2();  break;
-            case preset2Index:     setPresetsPreset2();   break;
-        }
-    }
-    
 
-    void setPresetsPreset1()
-    {
-        //TO DO:
-    }
     
-    void setPresetsPreset2()
-    {
-       //TO DO:
-    }
 };

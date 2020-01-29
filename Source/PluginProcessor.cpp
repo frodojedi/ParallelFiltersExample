@@ -559,10 +559,6 @@ AudioProcessorEditor* FilterExampleAudioProcessor::createEditor()
 //==============================================================================
 void FilterExampleAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-    
     auto state = parameters.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
@@ -570,9 +566,6 @@ void FilterExampleAudioProcessor::getStateInformation (MemoryBlock& destData)
 
 void FilterExampleAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-    
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
@@ -581,6 +574,21 @@ void FilterExampleAudioProcessor::setStateInformation (const void* data, int siz
 }
 
 
+void FilterExampleAudioProcessor::loadPresetFromID(int selectedID)
+{
+    switch (selectedID)
+    {
+        //case preset1Index:     setPresetsPreset2();  break;
+        //case preset2Index:     setPresetsPreset2();   break;
+            
+        case 1 : // preset1Index:
+            //file = load file... ;
+            
+            break;
+            
+    }
+    //Poi fare alla fine ValueTree::fromXml(XmlDocument::parse(file));
+}
 
 
 

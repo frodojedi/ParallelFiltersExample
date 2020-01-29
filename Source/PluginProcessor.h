@@ -46,6 +46,9 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    void loadPresetFromID(int selectedID);
+
+    
     //==============================================================================
     
     AudioProcessorValueTreeState parameters;
