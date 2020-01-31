@@ -13,7 +13,6 @@ FilterExampleAudioProcessor::FilterExampleAudioProcessor()
     filterArray.emplace_back("parameter2");
     filterArray.emplace_back("parameter3");
     */
-    
 
     globalGainParameterPanelGeneralControls = parameters.getRawParameterValue ("global_gain_panel_general_controls");
     
@@ -47,10 +46,6 @@ FilterExampleAudioProcessor::~FilterExampleAudioProcessor()
 }
 
 
-
-
-
-
 void FilterExampleAudioProcessor::addGeneralControlsParams (AudioProcessorValueTreeState::ParameterLayout& layout)
 {
     layout.add (
@@ -61,7 +56,6 @@ void FilterExampleAudioProcessor::addGeneralControlsParams (AudioProcessorValueT
                                                        0.15f)
                 );
 }
-
 
 
 void FilterExampleAudioProcessor::addFilter1Params (AudioProcessorValueTreeState::ParameterLayout& layout)
@@ -461,7 +455,6 @@ void FilterExampleAudioProcessor::updateParameters()
     float globalGain = *globalGainParameterPanelGeneralControls;
 
     filterArray[0].setGain(gainFilter1);
-    //filter1.setGain(0.5f);
     filterArray[0].setFrequency(freqFilter1);
     filterArray[0].setPoleRadius(poleRadiusFilter1);
     filterArray[0].setNumObjects(numObjectsFilter1);
@@ -574,20 +567,42 @@ void FilterExampleAudioProcessor::setStateInformation (const void* data, int siz
 }
 
 
+ 
+void FilterExampleAudioProcessor::loadPreset(const File& presetFile)
+{
+    if (! presetFile.existsAsFile())
+    {
+        //DBG ("File doesn't exist ...");
+        //Here I could handle the fact that the default file was not found
+        return;
+    }
+    
+    MemoryBlock data;
+    
+    if (presetFile.loadFileAsData (data))
+    {
+        setStateInformation (data.getData(), (int) data.getSize());
+    }
+    else
+    {
+        AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+                                          TRANS("Error whilst loading"),
+                                          TRANS("Couldn't read from the specified file!"));
+    }
+}
+
 void FilterExampleAudioProcessor::loadPresetFromID(int selectedID)
 {
     switch (selectedID)
     {
-        //case preset1Index:     setPresetsPreset2();  break;
-        //case preset2Index:     setPresetsPreset2();   break;
-            
-        case 1 : // preset1Index:
-            //file = load file... ;
-            
+        case presetsIndex::preset1Index:
+            loadPreset (dirPresets.getChildFile ("preset1.xml"));
             break;
-            
+  
+        case presetsIndex::preset2Index:
+            loadPreset (dirPresets.getChildFile ("preset2.xml"));
+            break;
     }
-    //Poi fare alla fine ValueTree::fromXml(XmlDocument::parse(file));
 }
 
 

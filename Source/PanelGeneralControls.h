@@ -1,4 +1,3 @@
-
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -9,7 +8,6 @@ public:
 
     PanelGeneralControls (FilterExampleAudioProcessor& proc, AudioProcessorValueTreeState& valueTreeState) : m_proc(proc)
     {
-
         addAndMakeVisible (&openButton);
         openButton.setButtonText ("Open...");
         openButton.onClick = [this] { openButtonClicked(); };
@@ -33,7 +31,6 @@ public:
         addAndMakeVisible (&currentPositionLabel);
         currentPositionLabel.setText ("Stopped", dontSendNotification);
         
-        
         globalGainSlider.setColour (Slider::textBoxTextColourId, colourSliderTextBoxText);
         globalGainSlider.setColour (Slider::textBoxOutlineColourId, colourSlidertextBoxOutline);
         globalGainSlider.setColour (Slider::thumbColourId, colourSliderThumb);
@@ -48,8 +45,8 @@ public:
         presetsMenuLabel.setText ("Select presets", dontSendNotification);
         //presetsMenuLabel.setFont (textFont);
         addAndMakeVisible (presetsMenu);
-        presetsMenu.addItem("Preset 1", preset1Index);
-        presetsMenu.addItem("Preset 2", preset2Index);
+        presetsMenu.addItem("Preset 1", m_proc.presetsIndex::preset1Index);
+        presetsMenu.addItem("Preset 2", m_proc.presetsIndex::preset2Index);
         //presetsMenu.onChange = [this] { presetsMenuChanged(); };
         presetsMenu.onChange = [this] { m_proc.loadPresetFromID(presetsMenu.getSelectedId()); };
         //presetsMenu.setSelectedId (preset1Index); -> Maybe this is not necessary? It should be set from the Value Tree
@@ -62,14 +59,13 @@ public:
         formatManager.registerBasicFormats();
         m_proc.transportSource.addChangeListener (this);
         m_proc.state = FilterExampleAudioProcessor::TransportState::Stopped;
-        File dir("~/Documents/Development/codice_JUCE/Learning_JUCE/MyPluginsLearningTrials/ParallelFiltersExample/Resources/WavFiles");
-        loadDefaultWavFile (dir.getChildFile ("exciter.wav"));
+        loadWavFile (m_proc.dirWavFiles.getChildFile ("exciter.wav"));
     }
     
     
     
-    ~PanelGeneralControls(){
-        
+    ~PanelGeneralControls()
+    {
         m_proc.transportSource.removeChangeListener (this);
         globalGainAttachment.reset();
     }
@@ -113,12 +109,9 @@ public:
         presetsMenuLabel   .setBounds (10, 175, getWidth() - 20, 20);
         presetsMenu        .setBounds (10, 200, getWidth() - 20, 20);
         
-        
         auto sliderLeft = paramLabelWidth + 10;
         auto sliderWidth = getWidth() - sliderLeft - 10;
         globalGainSlider.setBounds (sliderLeft, 300, sliderWidth, 20);
-        
-        
     }
     
 private:
@@ -145,33 +138,19 @@ private:
     std::unique_ptr<ComboBoxAttachment> menupresetsAttachment;
     std::unique_ptr<SliderAttachment> globalGainAttachment;
     
-    
     enum
     {
         paramControlHeight = 40,
         paramLabelWidth    = 80,
         paramSliderWidth   = 350
     };
-
-    
-    enum presetsIndex
-    {
-        preset1Index = 1,
-        preset2Index
-    };
-
-    
     
     Colour colour_background = Colours::lightsalmon;
-    
     Colour colourText = Colours::black;
     Colour colourSliderThumb = Colours::darkred;
     Colour colourSliderTrack = Colours::whitesmoke;
     Colour colourSliderTextBoxText = colourText;
     Colour colourSlidertextBoxOutline = colourSliderThumb;
-    
-    
-    
     
     //==============================================================================
     void changeState (FilterExampleAudioProcessor::TransportState newState)
@@ -207,11 +186,13 @@ private:
     
     
     
-    void loadDefaultWavFile(const File& defaultWavFile)
+    void loadWavFile(const File& defaultWavFile)
     {
         if (! defaultWavFile.existsAsFile())
         {
-            return;  // file doesn't exist
+            //DBG ("File doesn't exist ...");
+            //Here I could handle the fact that the default file was not found
+            return;
         }
             
         auto* reader = formatManager.createReaderFor (defaultWavFile);
@@ -263,8 +244,6 @@ private:
         updateLoopState (loopingToggle.getToggleState());
     }
 
-    
     //==========================================================================
-
     
 };

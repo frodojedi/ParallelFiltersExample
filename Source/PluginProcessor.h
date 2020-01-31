@@ -12,7 +12,12 @@ public:
     //==============================================================================
     FilterExampleAudioProcessor();
     ~FilterExampleAudioProcessor();
-
+    
+    //==============================================================================
+    
+    File dirWavFiles = File("~/Documents/Development/codice_JUCE/Learning_JUCE/MyPluginsLearningTrials/ParallelFiltersExample/Resources/WavFiles");
+    File dirPresets = File("~/Documents/Development/codice_JUCE/Learning_JUCE/MyPluginsLearningTrials/ParallelFiltersExample/Resources/Presets");
+    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -46,8 +51,9 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    
+    void loadPreset(const File& defaultWavFile);
     void loadPresetFromID(int selectedID);
-
     
     //==============================================================================
     
@@ -76,6 +82,13 @@ public:
        };
        
        TransportState state;
+    
+    
+    enum presetsIndex
+    {
+        preset1Index = 1,
+        preset2Index
+    };
     
 private:
     

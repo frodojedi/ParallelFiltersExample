@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -15,19 +5,13 @@
 FilterExampleAudioProcessorEditor::FilterExampleAudioProcessorEditor (FilterExampleAudioProcessor& p, AudioProcessorValueTreeState& vts)
     : AudioProcessorEditor (&p), processor (p), valueTreeState (vts)
 {
-    
     auto& lnf = getLookAndFeel();
     lnf.setColour (Slider::thumbColourId, colourSliderThumb);
     lnf.setColour (Slider::trackColourId, colourSliderTrack);
-    
     lnf.setColour (Slider::textBoxTextColourId, colourSliderTextBoxText);
     lnf.setColour (Slider::textBoxOutlineColourId, colourSlidertextBoxOutline);
-    
     lnf.setColour (Label::textColourId, colourText);
-    
-    
     sendLookAndFeelChange();
-
     
     addAndMakeVisible (panelGeneralControls);
     addAndMakeVisible (panelFilter1);
